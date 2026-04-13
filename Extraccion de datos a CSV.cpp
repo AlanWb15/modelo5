@@ -3,7 +3,7 @@
 input bool     InpGlobalHistory  = false;
 input datetime InpDateFrom       = D'2024.01.01 00:00';
 input datetime InpDateTo         = D'2026.12.31 23:59';
-input int      InpExportMs       = 500;               // mínimo 500 ms
+input int      InpExportMs       = 500;                // mínimo 500 ms
 input string   InpExportFileName = "mt5_stats.csv";
 
 struct SStats
