@@ -1,0 +1,814 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Dashboard MT5</title>
+<style>
+:root{
+  --bg:#07111f;
+  --bg2:#0b1728;
+  --panel:#0f1d33;
+  --panel2:#13233d;
+  --line:#20385d;
+  --soft:#8fa8cf;
+  --text:#eef4ff;
+  --green:#21f0b3;
+  --red:#ff667d;
+  --blue:#6fb7ff;
+  --cyan:#66e7ff;
+  --gold:#ffd166;
+  --shadow:0 10px 30px rgba(0,0,0,.25);
+  --radius:18px;
+}
+
+*{box-sizing:border-box}
+
+html,body{
+  margin:0;
+  padding:0;
+  background:
+    radial-gradient(circle at top left, rgba(41,94,255,.15), transparent 30%),
+    radial-gradient(circle at top right, rgba(0,255,255,.08), transparent 20%),
+    linear-gradient(180deg, #06101d 0%, #07111f 100%);
+  color:var(--text);
+  font-family:Arial, Helvetica, sans-serif;
+}
+
+body{
+  min-height:100vh;
+}
+
+.container{
+  width:min(1600px, calc(100% - 28px));
+  margin:0 auto;
+  padding:18px 0 28px;
+}
+
+.topbar{
+  display:flex;
+  justify-content:space-between;
+  align-items:flex-start;
+  gap:16px;
+  margin-bottom:18px;
+}
+
+.brand{
+  display:flex;
+  flex-direction:column;
+  gap:8px;
+}
+
+.eyebrow{
+  color:var(--cyan);
+  font-size:12px;
+  letter-spacing:.16em;
+  text-transform:uppercase;
+  opacity:.9;
+}
+
+.title{
+  font-size:34px;
+  font-weight:800;
+  line-height:1.05;
+}
+
+.subtitle{
+  color:var(--soft);
+  font-size:14px;
+}
+
+.top-right{
+  display:flex;
+  flex-wrap:wrap;
+  justify-content:flex-end;
+  gap:10px;
+}
+
+.badge{
+  background:rgba(17,31,53,.9);
+  border:1px solid var(--line);
+  color:#cfe3ff;
+  border-radius:14px;
+  padding:10px 14px;
+  font-size:13px;
+  min-height:42px;
+  display:flex;
+  align-items:center;
+  box-shadow:var(--shadow);
+}
+
+.layout{
+  display:grid;
+  grid-template-columns: 1.45fr .9fr;
+  gap:16px;
+  margin-bottom:16px;
+}
+
+.panel{
+  background:linear-gradient(180deg, rgba(16,29,51,.98) 0%, rgba(11,23,40,.98) 100%);
+  border:1px solid var(--line);
+  border-radius:var(--radius);
+  box-shadow:var(--shadow);
+  overflow:hidden;
+}
+
+.panel-header{
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  gap:12px;
+  padding:18px 18px 0 18px;
+}
+
+.panel-title{
+  font-size:18px;
+  font-weight:700;
+}
+
+.panel-note{
+  color:var(--soft);
+  font-size:12px;
+}
+
+.hero{
+  padding:18px;
+  display:grid;
+  grid-template-columns: 1.2fr .8fr;
+  gap:16px;
+}
+
+.hero-main{
+  background:linear-gradient(135deg, rgba(29,53,92,.95), rgba(10,22,40,.95));
+  border:1px solid #2a4c7f;
+  border-radius:20px;
+  padding:20px;
+  position:relative;
+  overflow:hidden;
+}
+
+.hero-main::before{
+  content:"";
+  position:absolute;
+  inset:auto -30px -30px auto;
+  width:180px;
+  height:180px;
+  border-radius:50%;
+  background:radial-gradient(circle, rgba(102,231,255,.18), transparent 65%);
+}
+
+.symbol{
+  font-size:13px;
+  color:#b8cced;
+  letter-spacing:.10em;
+  text-transform:uppercase;
+  margin-bottom:10px;
+}
+
+.main-profit{
+  font-size:50px;
+  font-weight:800;
+  line-height:1;
+  margin-bottom:10px;
+}
+
+.main-profit.positive{color:var(--green)}
+.main-profit.negative{color:var(--red)}
+
+.hero-row{
+  display:grid;
+  grid-template-columns:repeat(3,1fr);
+  gap:12px;
+  margin-top:16px;
+}
+
+.mini-stat{
+  background:rgba(8,18,32,.45);
+  border:1px solid rgba(93,131,187,.25);
+  border-radius:14px;
+  padding:12px;
+}
+
+.mini-stat .label{
+  color:#8fa8cf;
+  font-size:12px;
+  margin-bottom:6px;
+}
+
+.mini-stat .value{
+  font-size:20px;
+  font-weight:700;
+}
+
+.hero-side{
+  display:grid;
+  grid-template-columns:1fr;
+  gap:12px;
+}
+
+.stack-card{
+  background:linear-gradient(180deg, rgba(19,35,61,.95), rgba(12,23,41,.95));
+  border:1px solid var(--line);
+  border-radius:18px;
+  padding:15px;
+}
+
+.stack-label{
+  color:var(--soft);
+  font-size:12px;
+  margin-bottom:8px;
+}
+
+.stack-value{
+  font-size:28px;
+  font-weight:800;
+}
+
+.stack-sub{
+  color:#a9c1ea;
+  font-size:12px;
+  margin-top:6px;
+}
+
+.right-grid{
+  padding:18px;
+  display:grid;
+  grid-template-columns:1fr 1fr;
+  gap:12px;
+}
+
+.kpi{
+  background:linear-gradient(180deg, rgba(19,35,61,.9), rgba(13,25,43,.9));
+  border:1px solid var(--line);
+  border-radius:16px;
+  padding:14px;
+}
+
+.kpi .label{
+  color:var(--soft);
+  font-size:12px;
+  margin-bottom:8px;
+}
+
+.kpi .value{
+  font-size:24px;
+  font-weight:800;
+  line-height:1.1;
+}
+
+.kpi .sub{
+  color:#9db5dd;
+  font-size:12px;
+  margin-top:6px;
+}
+
+.full-grid{
+  display:grid;
+  grid-template-columns:repeat(4,1fr);
+  gap:12px;
+  margin-bottom:16px;
+}
+
+.info-card{
+  background:linear-gradient(180deg, rgba(15,29,51,.98), rgba(10,20,37,.98));
+  border:1px solid var(--line);
+  border-radius:18px;
+  box-shadow:var(--shadow);
+  padding:16px;
+}
+
+.info-card .label{
+  color:var(--soft);
+  font-size:12px;
+  margin-bottom:8px;
+}
+
+.info-card .value{
+  font-size:24px;
+  font-weight:800;
+}.info-card .sub{
+  color:#a7bddd;
+  font-size:12px;
+  margin-top:6px;
+}
+
+.section{
+  background:linear-gradient(180deg, rgba(15,29,51,.98), rgba(10,20,37,.98));
+  border:1px solid var(--line);
+  border-radius:18px;
+  box-shadow:var(--shadow);
+  padding:18px;
+  margin-bottom:16px;
+}
+
+.section-title{
+  font-size:18px;
+  font-weight:700;
+  margin-bottom:14px;
+}
+
+.metrics-grid{
+  display:grid;
+  grid-template-columns:repeat(4,1fr);
+  gap:12px;
+}
+
+.metric{
+  background:linear-gradient(180deg, rgba(19,35,61,.95), rgba(13,25,43,.95));
+  border:1px solid var(--line);
+  border-radius:16px;
+  padding:14px;
+}
+
+.metric .label{
+  color:var(--soft);
+  font-size:12px;
+  margin-bottom:8px;
+}
+
+.metric .value{
+  font-size:21px;
+  font-weight:800;
+}
+
+.metric .sub{
+  color:#a7bddd;
+  font-size:12px;
+  margin-top:6px;
+}
+
+.table-wrap{
+  overflow:auto;
+  border-radius:14px;
+  border:1px solid var(--line);
+}
+
+table{
+  width:100%;
+  border-collapse:collapse;
+  min-width:1100px;
+  background:rgba(7,15,28,.55);
+}
+
+thead th{
+  position:sticky;
+  top:0;
+  z-index:1;
+  background:#10203a;
+  color:#cfe2ff;
+  font-size:13px;
+  text-align:left;
+  padding:12px 10px;
+  border-bottom:1px solid var(--line);
+  white-space:nowrap;
+}
+
+tbody td{
+  padding:11px 10px;
+  border-bottom:1px solid rgba(32,56,93,.65);
+  color:#edf4ff;
+  font-size:14px;
+  white-space:nowrap;
+}
+
+tbody tr:hover{
+  background:rgba(74,125,255,.07);
+}
+
+.positive{color:var(--green)!important}
+.negative{color:var(--red)!important}
+.neutral{color:var(--gold)!important}
+
+.footer-note{
+  color:var(--soft);
+  font-size:12px;
+  margin-top:10px;
+}
+
+@media(max-width:1300px){
+  .layout{
+    grid-template-columns:1fr;
+  }
+  .hero{
+    grid-template-columns:1fr;
+  }
+  .full-grid,
+  .metrics-grid{
+    grid-template-columns:repeat(2,1fr);
+  }
+}
+
+@media(max-width:760px){
+  .container{
+    width:min(100%, calc(100% - 18px));
+  }
+  .topbar{
+    flex-direction:column;
+    align-items:flex-start;
+  }
+  .top-right{
+    justify-content:flex-start;
+  }
+  .title{
+    font-size:28px;
+  }
+  .hero-row,
+  .right-grid,
+  .full-grid,
+  .metrics-grid{
+    grid-template-columns:1fr;
+  }
+}
+
+</style>
+</head>
+<body>
+<div class="container">
+
+  <div class="topbar">
+    <div class="brand">
+      <div class="eyebrow">Trading Dashboard</div>
+      <div class="title">Resumen financiero MT5</div>
+      <div class="subtitle">Lectura automática del archivo CSV en tiempo real</div>
+    </div>
+
+    <div class="top-right">
+      <div class="badge" id="user">Usuario: -</div>
+      <div class="badge" id="server">Servidor: -</div>
+      <div class="badge" id="status">Conectando...</div>
+      <div class="badge" id="lastUpdate">Esperando datos...</div>
+    </div>
+  </div>
+
+  <div class="layout">
+    <div class="panel">
+      <div class="panel-header">
+        <div>
+          <div class="panel-title">Vista principal</div>
+          <div class="panel-note">Bloque principal con rendimiento y cuenta</div>
+        </div>
+      </div>
+
+      <div class="hero">
+        <div class="hero-main">
+          <div class="symbol" id="scope">Símbolo: -</div>
+          <div class="main-profit" id="netProfitMain">-</div>
+
+          <div class="hero-row">
+            <div class="mini-stat">
+              <div class="label">Balance</div>
+              <div class="value" id="balance">-</div>
+            </div>
+            <div class="mini-stat">
+              <div class="label">Equity</div>
+              <div class="value" id="equity">-</div>
+            </div>
+            <div class="mini-stat">
+              <div class="label">Free Margin</div>
+              <div class="value" id="freeMargin">-</div>
+            </div>
+          </div>
+        </div>
+
+        <div class="hero-side">
+          <div class="stack-card">
+            <div class="stack-label">Winrate</div>
+            <div class="stack-value" id="winrate">-</div>
+            <div class="stack-sub">Porcentaje de operaciones ganadoras</div>
+          </div>
+
+          <div class="stack-card">
+            <div class="stack-label">Total Trades</div>
+            <div class="stack-value" id="totalTrades">-</div>
+            <div class="stack-sub" id="period">Periodo: -</div>
+          </div>
+
+          <div class="stack-card">
+            <div class="stack-label">Margin Level</div>
+            <div class="stack-value" id="marginLevel">-</div>
+            <div class="stack-sub">Nivel actual de margen</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="panel">
+      <div class="panel-header">
+        <div>
+          <div class="panel-title">Panel de cuenta</div>
+          <div class="panel-note">Resumen compacto del estado actual</div>
+        </div>
+      </div>
+
+      <div class="right-grid">
+        <div class="kpi">
+          <div class="label">Gross Profit</div>
+          <div class="value" id="grossProfit">-</div>
+          <div class="sub">Ganancia bruta</div>
+        </div>
+
+        <div class="kpi">
+          <div class="label">Gross Loss</div>
+          <div class="value" id="grossLoss">-</div>
+          <div class="sub">Pérdida bruta</div>
+        </div>
+
+        <div class="kpi">
+          <div class="label">Winners</div>
+          <div class="value" id="winners">-</div>
+          <div class="sub">Operaciones ganadoras</div>
+        </div>
+
+        <div class="kpi">
+          <div class="label">Losers</div>
+          <div class="value" id="losers">-</div>
+          <div class="sub">Operaciones perdedoras</div>
+        </div>
+
+        <div class="kpi">
+          <div class="label">Margin</div>
+          <div class="value" id="margin">-</div>
+          <div class="sub">Margen usado</div>
+        </div>
+
+        <div class="kpi">
+          <div class="label">Total %</div>
+          <div class="value" id="totalPct">-</div>
+          <div class="sub">Rendimiento total</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="full-grid">
+    <div class="info-card">
+      <div class="label">Expectancy</div>
+      <div class="value" id="expectancy">-</div>
+      <div class="sub">Ganancia esperada por trade</div>
+    </div>
+
+    <div class="info-card">
+      <div class="label">Avg Win</div>
+      <div class="value" id="avgWin">-</div>
+      <div class="sub">Promedio por operación ganadora</div>
+    </div>
+
+    <div class="info-card">
+      <div class="label">Avg Loss</div>
+      <div class="value" id="avgLoss">-</div>
+      <div class="sub">Promedio por operación perdedora</div>
+    </div>
+
+    <div class="info-card">
+      <div class="label">Avg Pips</div>
+      <div class="value" id="avgPips">-</div>
+      <div class="sub">Promedio general de pips</div>
+    </div>
+  </div>
+
+  <div class="section">
+    <div class="section-title">Métricas detalladas</div>
+    <div class="metrics-grid">
+      <div class="metric"><div class="label">Pips Total Win</div><div class="value" id="pipsTotalWin">-</div><div class="sub">Pips acumulados ganadores</div></div>
+      <div class="metric"><div class="label">Pips Total Loss</div><div class="value" id="pipsTotalLoss">-</div><div class="sub">Pips acumulados perdedores</div></div>
+      <div class="metric"><div class="label">Avg Pips Win</div><div class="value" id="avgPipsWin">-</div><div class="sub">Promedio de pips ganadores</div></div>
+      <div class="metric"><div class="label">Avg Pips Loss</div><div class="value" id="avgPipsLoss">-</div><div class="sub">Promedio de pips perdedores</div></div>
+
+      <div class="metric"><div class="label">Max Drawdown</div><div class="value" id="maxDrawdown">-</div><div class="sub">Máxima caída monetaria</div></div>
+      <div class="metric"><div class="label">Avg Drawdown</div><div class="value" id="avgDD">-</div><div class="sub">Caída promedio</div></div>
+      <div class="metric"><div class="label">Max DD %</div><div class="value" id="maxDDpct">-</div><div class="sub">Máxima caída porcentual</div></div>
+      <div class="metric"><div class="label">Avg DD %</div><div class="value" id="avgDDpct">-</div><div class="sub">Caída promedio porcentual</div></div>
+    </div>
+  </div>
+  <div class="section">
+    <div class="section-title">Historial de operaciones</div>
+    <div class="table-wrap">
+      <table id="historyTable">
+        <thead>
+          <tr>
+            <th>Close Time</th>
+            <th>Ticket</th>
+            <th>Position ID</th>
+            <th>Symbol</th>
+            <th>Type</th>
+            <th>Volume</th>
+            <th>Price</th>
+            <th>Profit</th>
+            <th>Swap</th>
+            <th>Commission</th>
+            <th>Net</th>
+            <th>Comment</th>
+          </tr>
+        </thead>
+        <tbody></tbody>
+      </table>
+    </div>
+    <div class="footer-note">Lectura local del CSV. Si abres el HTML directamente y falla, ejecútalo con un servidor local.</div>
+  </div>
+</div>
+
+<script>
+const FILE = "mt5_stats_0_61485600_0.csv";
+const REFRESH_MS = 750;
+const $ = id => document.getElementById(id);
+let lastGoodText = "";
+
+function toNumber(v){
+  const n = parseFloat(v);
+  return isNaN(n) ? null : n;
+}
+
+function money(v){
+  const n = toNumber(v);
+  return n === null ? "-" : n.toFixed(2);
+}
+
+function pct(v){
+  const n = toNumber(v);
+  return n === null ? "-" : n.toFixed(2) + "%";
+}
+
+function plain(v){
+  return (v === undefined || v === null || v === "") ? "-" : v;
+}
+
+function applySign(el, n){
+  el.classList.remove("positive","negative","neutral");
+  if(n === null) return;
+  if(n > 0) el.classList.add("positive");
+  else if(n < 0) el.classList.add("negative");
+  else el.classList.add("neutral");
+}
+
+function setText(id, value){
+  $(id).textContent = value;
+}
+
+function setMoney(id, value){
+  const el = $(id);
+  const n = toNumber(value);
+  el.textContent = money(value);
+  applySign(el, n);
+}
+
+function setPct(id, value){
+  const el = $(id);
+  const n = toNumber(value);
+  el.textContent = pct(value);
+  applySign(el, n);
+}
+
+function setPlain(id, value){
+  const el = $(id);
+  const n = toNumber(value);
+  el.textContent = plain(value);
+  if(n !== null) applySign(el, n);
+}
+
+function parseCsv(text){
+  const rows = text
+    .replace(/\r/g, "")
+    .split("\n")
+    .map(line => line.split(","));
+
+  const headersIndex = rows.findIndex(r => r[0] === "timestamp");
+  const summaryIndex = headersIndex + 1;
+  const historyHeaderIndex = rows.findIndex(r => r[0] === "close_time");
+
+  if(headersIndex === -1 || historyHeaderIndex === -1) throw new Error("Formato CSV inválido");
+
+  const headers = rows[headersIndex];
+  const summary = rows[summaryIndex];
+  const historyHeaders = rows[historyHeaderIndex];
+  const historyRows = rows
+    .slice(historyHeaderIndex + 1)
+    .filter(r => r.length && r[0] && r.join("").trim() !== "");
+
+  const map = {};
+  headers.forEach((h, i) => map[h.trim()] = (summary[i] || "").trim());
+
+  return {
+    map,
+    historyHeaders,
+    historyRows
+  };
+}
+
+function render(data){
+  const s = data.map;
+
+  setText("user", "Usuario: " + plain(s.account_name));
+  setText("server", "Servidor: " + plain(s.server));
+  setText("scope", "Símbolo / Scope: " + plain(s.scope));
+  setText("period", "Periodo: " + plain(s.fromStr) + " a " + plain(s.toStr));
+
+  const netMain = $("netProfitMain");
+  const netNum = toNumber(s.netProfit);
+  netMain.textContent = money(s.netProfit);
+  netMain.classList.remove("positive","negative");
+  if(netNum !== null){
+    if(netNum >= 0) netMain.classList.add("positive");
+    else netMain.classList.add("negative");
+  }
+
+  setMoney("balance", s.balance);
+  setMoney("equity", s.equity);
+  setMoney("freeMargin", s.freeMargin);
+  setPct("winrate", s.winrate);
+  setPlain("totalTrades", s.totalTrades);
+  setPct("marginLevel", s.marginLevel);
+
+  setMoney("grossProfit", s.grossProfit);
+  setMoney("grossLoss", s.grossLoss);
+  setPlain("winners", s.winners);
+  setPlain("losers", s.losers);
+  setMoney("margin", s.margin);
+  setPct("totalPct", s.totalPct);
+
+  setMoney("expectancy", s.expectancy);
+  setMoney("avgWin", s.avgWin);
+  setMoney("avgLoss", s.avgLoss);
+  setPlain("avgPips", plain(s.avgPips));
+
+  setPlain("pipsTotalWin", plain(s.pipsTotalWin));
+  setPlain("pipsTotalLoss", plain(s.pipsTotalLoss));
+  setPlain("avgPipsWin", plain(s.avgPipsWin));
+  setPlain("avgPipsLoss", plain(s.avgPipsLoss));
+  setMoney("maxDrawdown", s.maxDrawdown);
+  setMoney("avgDD", s.avgDD);
+  setPct("maxDDpct", s.maxDDpct);
+  setPct("avgDDpct", s.avgDDpct);
+
+  const tbody = $("historyTable").querySelector("tbody");
+  tbody.innerHTML = "";
+
+  data.historyRows.forEach(row => {
+    const tr = document.createElement("tr");
+
+    const close_time = plain(row[0]);
+    const ticket = plain(row[1]);
+    const position_id = plain(row[2]);
+    const symbol = plain(row[3]);
+    const type = plain(row[4]);
+    const volume = plain(row[5]);
+    const price = plain(row[6]);
+    const profit = toNumber(row[7]);
+    const swap = toNumber(row[8]);
+    const commission = toNumber(row[9]);
+    const net = toNumber(row[10]);
+    const comment = plain(row[11]);
+
+    tr.innerHTML = `
+      <td>${close_time}</td>
+      <td>${ticket}</td>
+      <td>${position_id}</td>
+      <td>${symbol}</td>
+      <td>${type}</td>
+      <td>${volume}</td>
+      <td>${price}</td>
+      <td class="${profit === null ? '' : (profit >= 0 ? 'positive' : 'negative')}">${profit === null ? '-' : profit.toFixed(2)}</td>
+      <td class="${swap === null ? '' : (swap >= 0 ? 'positive' : 'negative')}">${swap === null ? '-' : swap.toFixed(2)}</td>
+      <td class="${commission === null ? '' : (commission >= 0 ? 'positive' : 'negative')}">${commission === null ? '-' : commission.toFixed(2)}</td>
+      <td class="${net === null ? '' : (net >= 0 ? 'positive' : 'negative')}">${net === null ? '-' : net.toFixed(2)}</td>
+      <td>${comment}</td>
+    `;
+
+    tbody.appendChild(tr);
+  });
+
+  setText("status", "Estado: conectado");
+  setText("lastUpdate", "Actualizado: " + new Date().toLocaleTimeString());
+}
+
+async function cargarCSV(){
+  try{
+    const res = await fetch(FILE + "?t=" + Date.now(), { cache:"no-store" });
+    if(!res.ok) throw new Error("No se pudo leer el CSV");
+    const text = await res.text();
+
+    if(!text || text.trim().length < 30){
+      throw new Error("CSV vacío o incompleto");
+    }
+
+    lastGoodText = text;
+    const parsed = parseCsv(text);
+    render(parsed);
+  }catch(err){
+    if(lastGoodText){
+      try{
+        render(parseCsv(lastGoodText));
+        setText("status", "Estado: usando última copia válida");
+      }catch(e){
+        setText("status", "Estado: error de lectura");
+      }
+    }else{
+      setText("status", "Estado: " + err.message);
+    }
+  }
+}
+
+cargarCSV();
+setInterval(cargarCSV, REFRESH_MS);
+</script>
+</body>
+</html>
